@@ -1,6 +1,14 @@
 <div class="grid">
     <div class="col-12">
         <div class="card">
+            <p-button
+                class="p-button-lg"
+                label="Limpar campos"
+                icon="pi pi-plus"
+                [loading]="loading"
+                (onClick)="clear()"
+                pRipple
+            ></p-button>
             <h5>Criar Orçamento</h5>
             <form [formGroup]="form">
                 <h5>Cliente</h5>

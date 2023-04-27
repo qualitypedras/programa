@@ -1,4 +1,13 @@
 <div class="layout-topbar">
+    <button
+        #menubutton
+        style="margin-left: 0"
+        class="p-link layout-menu-button layout-topbar-button"
+        (click)="layoutService.onMenuToggle()"
+    >
+        <i class="pi pi-bars"></i>
+    </button>
+
     <a class="layout-topbar-logo" routerLink="">
         <img
             style="width: 10rem; height: 10rem"
@@ -10,14 +19,6 @@
             alt="logo"
         />
     </a>
-
-    <button
-        #menubutton
-        class="p-link layout-menu-button layout-topbar-button"
-        (click)="layoutService.onMenuToggle()"
-    >
-        <i class="pi pi-bars"></i>
-    </button>
 
     <button
         #topbarmenubutton

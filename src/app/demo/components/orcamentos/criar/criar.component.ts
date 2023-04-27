@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Validators, FormBuilder, FormArray, FormGroup } from '@angular/forms';
+import { Validators, FormBuilder, FormArray } from '@angular/forms';
 import { AuthService } from 'src/app/shared/service/auth.service';
 import { OrcamentoService } from '../orcamento.service';
 import { HttpClient } from '@angular/common/http';
@@ -151,6 +151,20 @@ export class CriarOrcamentoComponent {
                 }
             },
         });
+        this.form.valueChanges.subscribe({
+            next: () => {
+                localStorage.setItem(
+                    'orcamento-form-data',
+                    JSON.stringify(this.form.value)
+                );
+            },
+        });
+
+        let formData: any = localStorage.getItem('orcamento-form-data');
+        if (formData) {
+            formData = JSON.parse(formData);
+            this.form.patchValue(formData);
+        }
     }
 
     toTitleCase(event) {
@@ -348,10 +362,32 @@ export class CriarOrcamentoComponent {
     }
 
     erase() {
-        this.signaturePadOptions.dotSize = 20;
+        this.signaturePad.options.minWidth = 20;
+        this.signaturePad.options.maxWidth = 20;
         const canvas = this.signaturePad.getCanvas();
         var ctx = canvas.getContext('2d');
         if (!ctx) return;
         ctx.globalCompositeOperation = 'destination-out';
+    }
+
+    clear() {
+        localStorage.removeItem('orcamento-form-data');
+        this.form = this.fb.group({
+            nomeCliente: ['', [Validators.required]],
+            telCliente: ['', [Validators.required]],
+            cepCliente: [''],
+            enderecoCliente: [''],
+            numeroEnderecoCliente: [''],
+            cidadeCliente: [''],
+            estadoCliente: [''],
+            complementoCliente: [''],
+            dataEnvio: [moment(new Date()).toDate(), [Validators.required]],
+            dataCriacao: [new Date().toLocaleString(), [Validators.required]],
+            atendente: ['', [Validators.required]],
+            informacaoAdicional: [''],
+            observacao: [''],
+            ambientes: this.fb.array([]),
+        });
+        this.form.get('atendente')?.setValue(this.auth.user.displayName);
     }
 }
