@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+    "@almothafar/angular-signature-pad": "^5.0.1",
     "@angular/animations": "^15.1.0",
     "@angular/cdk": "^15.1.0",
     "@angular/common": "^15.1.0",
@@ -23,6 +24,7 @@
     "@angular/router": "^15.1.0",
     "chart.js": "^3.3.2",
     "firebase": "^9.20.0",
+    "literallycanvas": "^0.5.2",
     "moment": "^2.29.4",
     "primeflex": "^3.2.1",
     "primeicons": "6.0.1",
@@ -35,7 +37,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~15.1.0",
+    "@angular-devkit/build-angular": "^15.2.7",
     "@angular-eslint/builder": "^15.1.0",
     "@angular-eslint/eslint-plugin": "^15.1.0",
     "@angular-eslint/eslint-plugin-template": "^15.1.0",

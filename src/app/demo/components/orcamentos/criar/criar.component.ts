@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormArray, FormGroup } from '@angular/forms';
 import { AuthService } from 'src/app/shared/service/auth.service';
 import { OrcamentoService } from '../orcamento.service';
@@ -8,9 +8,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import * as moment from 'moment';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import {
+    NgSignaturePadOptions,
+    SignaturePadComponent,
+} from '@almothafar/angular-signature-pad';
 
 @Component({
     templateUrl: './criar.component.html',
+    styleUrls: ['./rascunho.component.scss'],
     providers: [AuthService, OrcamentoService],
 })
 export class CriarOrcamentoComponent {
@@ -37,6 +42,8 @@ export class CriarOrcamentoComponent {
 
     maxDate = new Date();
 
+    rascunhoVisible = false;
+
     constructor(
         private fb: FormBuilder,
         public auth: AuthService,
@@ -62,7 +69,9 @@ export class CriarOrcamentoComponent {
                     .ref.get()
                     .then((doc) => {
                         if (doc.exists) {
-                            this.orcamento = doc.data();
+                            const data = doc.data() as any;
+                            this.orcamento = data;
+                            this.signaturePad.fromData(data.rascunhoData);
                             if (this.orcamento.dataEnvio?.seconds)
                                 this.orcamento.dataEnvio = moment(
                                     this.orcamento.dataEnvio.seconds * 1000
@@ -273,6 +282,8 @@ export class CriarOrcamentoComponent {
                 let form = this.form.value as any;
                 form.valorTotal = this.getValorTotalItens();
                 form.status = 'CRIADO';
+                form.rascunho = this.signaturePad.toDataURL();
+                form.rascunhoData = this.signaturePad.toData();
                 if (!this.orcamentoId) form.uid = uuidv4();
                 if (this.orcamentoId) form.uid = this.orcamentoId;
                 this.orcamentoService.SaveOrcamento(form);
@@ -316,5 +327,31 @@ export class CriarOrcamentoComponent {
             }
         });
         return valorTotal;
+    }
+
+    @ViewChild('signature')
+    public signaturePad!: SignaturePadComponent;
+
+    signaturePadOptions: NgSignaturePadOptions = {
+        // passed through to szimek/signature_pad constructor
+        minWidth: 5,
+        canvasWidth: 500,
+        canvasHeight: 300,
+        penColor: '#000',
+    };
+
+    draw() {
+        const canvas = this.signaturePad.getCanvas();
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.globalCompositeOperation = 'source-over'; // default value
+    }
+
+    erase() {
+        this.signaturePadOptions.dotSize = 20;
+        const canvas = this.signaturePad.getCanvas();
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.globalCompositeOperation = 'destination-out';
     }
 }

@@ -17,6 +17,9 @@ import { DividerModule } from 'primeng/divider';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { DialogModule } from 'primeng/dialog';
+import { PanelModule } from 'primeng/panel';
+import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 
 @NgModule({
     imports: [
@@ -38,7 +41,10 @@ import { ConfirmationService, MessageService } from 'primeng/api';
         DividerModule,
         CalendarModule,
         ToastModule,
+        DialogModule,
         ConfirmDialogModule,
+        PanelModule,
+        AngularSignaturePadModule,
     ],
     declarations: [CriarOrcamentoComponent],
     providers: [ConfirmationService, MessageService],

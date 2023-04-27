@@ -31,7 +31,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/literallycanvas/lib/css/literallycanvas.css"
+            ],
+            "scripts": [
             ]
           },
           "configurations": {
@@ -98,7 +101,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/literallycanvas/lib/css/literallycanvas.css"
             ],
             "scripts": []
           }

@@ -276,6 +276,27 @@
                 </div>
 
                 <p-divider></p-divider>
+                <p-panel header="Rascunho" [toggleable]="true">
+                    <signature-pad
+                        #signature
+                        [options]="signaturePadOptions"
+                    ></signature-pad>
+                    <p-divider></p-divider>
+                    <p-button
+                        class="p-button-lg mr-1 mt-1"
+                        icon="pi pi-pencil"
+                        (onClick)="draw()"
+                        pRipple
+                    ></p-button>
+                    <p-button
+                        class="p-button-lg ml-1 mt-1"
+                        icon="pi pi-eraser"
+                        (onClick)="erase()"
+                        pRipple
+                    ></p-button>
+                </p-panel>
+
+                <p-divider></p-divider>
 
                 <p-button
                     class="p-button-lg"
@@ -285,6 +306,7 @@
                     (onClick)="enviar()"
                     pRipple
                 ></p-button>
+
                 <p-toast></p-toast>
                 <p-confirmDialog #cd [style]="{ width: '50vw' }">
                     <ng-template pTemplate="footer">
