@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "programa-bf934": {
+      "hosting": {
+        "sakai-ng": [
+          "programa-bf934"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "programa-bf934"
+  }
+}

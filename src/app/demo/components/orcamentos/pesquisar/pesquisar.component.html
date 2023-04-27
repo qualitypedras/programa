@@ -1,0 +1,122 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h5>Orçamentos</h5>
+            <p-table
+                #dt1
+                [value]="orcamentos"
+                dataKey="uid"
+                [rows]="10"
+                [loading]="loading"
+                [rowHover]="true"
+                styleClass="p-datatable-gridlines"
+                [paginator]="true"
+                [globalFilterFields]="['nomeCliente', 'uid']"
+                responsiveLayout="scroll"
+                selectionMode="single"
+                (onRowSelect)="handleSelect($event)"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex justify-content-between flex-column sm:flex-row"
+                    >
+                        <button
+                            pButton
+                            label="Limpar"
+                            class="p-button-outlined mb-2"
+                            icon="pi pi-filter-slash"
+                            (click)="clear(dt1)"
+                        ></button>
+                        <span class="p-input-icon-left mb-2">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                #filter
+                                (input)="onGlobalFilter(dt1, $event)"
+                                placeholder="Pesquisar..."
+                                class="w-full"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Número
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Cliente
+                            </div>
+                        </th>
+                        <th style="min-width: 12rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Valor
+                            </div>
+                        </th>
+                        <th style="min-width: 14rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Envio
+                            </div>
+                        </th>
+                        <th style="min-width: 10rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Status
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-orcamento>
+                    <tr
+                        style="cursor: pointer"
+                        (click)="handleSelect(orcamento)"
+                    >
+                        <td>
+                            {{ orcamento.uid }}
+                        </td>
+                        <td>
+                            {{ orcamento.nomeCliente }}
+                        </td>
+                        <td>
+                            {{
+                                orcamento.valorTotal
+                                    | currency : "BRL" : "symbol"
+                            }}
+                        </td>
+                        <td>
+                            {{ orcamento.dataEnvio | date : "dd/MM/yyyy" }}
+                        </td>
+                        <td>
+                            {{ orcamento.status }}
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="8">Nenhum orçamento encontrado.</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="loadingbody">
+                    <tr>
+                        <td colspan="8">
+                            Carregando orçamentos... por favor, aguarde.
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,310 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <h5>Criar Orçamento</h5>
+            <form [formGroup]="form">
+                <h5>Cliente</h5>
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field col-12 md:col-6">
+                        <label htmlFor="firstname2">Nome</label>
+                        <input
+                            pInputText
+                            (input)="toTitleCase($event)"
+                            formControlName="nomeCliente"
+                            type="text"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <label htmlFor="lastname2">Telefone</label>
+                        <input
+                            pInputText
+                            formControlName="telCliente"
+                            type="tel"
+                            (input)="phoneMaskBrazil($event)"
+                            maxlength="15"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-2">
+                        <label htmlFor="zip">CEP</label>
+                        <input
+                            pInputText
+                            formControlName="cepCliente"
+                            type="text"
+                            (input)="zipCodeMask($event)"
+                            maxlength="9"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="address">Endereço</label>
+                        <input
+                            pInputTextarea
+                            formControlName="enderecoCliente"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <label htmlFor="city">Cidade</label>
+                        <input
+                            pInputText
+                            id="city"
+                            formControlName="cidadeCliente"
+                            type="text"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-3">
+                        <label htmlFor="estado">Estado</label>
+                        <input
+                            pInputText
+                            id="estado"
+                            formControlName="estadoCliente"
+                            type="text"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <label htmlFor="estado">Número</label>
+                        <input
+                            pInputText
+                            id="numero"
+                            formControlName="numeroEnderecoCliente"
+                            type="text"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-6">
+                        <label htmlFor="estado">Complemento</label>
+                        <input
+                            pInputText
+                            id="complemento"
+                            formControlName="complementoCliente"
+                            type="text"
+                        />
+                    </div>
+                </div>
+                <p-divider></p-divider>
+                <h5>Informações</h5>
+                <div
+                    class="shadow-1 mb-3 mt-3"
+                    formArrayName="ambientes"
+                    *ngFor="
+                        let ambiente of getAmbientes();
+                        index as ambienteIndex
+                    "
+                >
+                    <div class="p-fluid p-formgrid grid col-12">
+                        <ng-container formGroupName="{{ ambienteIndex }}">
+                            <div class="field col-12">
+                                <label>Ambiente</label>
+                                <input
+                                    pInputText
+                                    formControlName="descricao"
+                                    type="text"
+                                />
+                            </div>
+
+                            <ng-container
+                                formArrayName="itens"
+                                *ngFor="
+                                    let item of getItensAmbiente(ambienteIndex);
+                                    index as itemIndex
+                                "
+                            >
+                                <ng-container formGroupName="{{ itemIndex }}">
+                                    <div class="field col-12">
+                                        <label htmlFor="grid-password">
+                                            Especificação
+                                        </label>
+                                        <textarea
+                                            pInputTextarea
+                                            formControlName="especificacao"
+                                            type="text"
+                                        >
+                                        </textarea>
+                                    </div>
+                                    <div class="field col-12 md:col-6">
+                                        <label htmlFor="grid-password">
+                                            Material
+                                        </label>
+                                        <input
+                                            formControlName="material"
+                                            type="text"
+                                            pInputText
+                                        />
+                                    </div>
+
+                                    <div class="field col-4 md:col-1">
+                                        <label htmlFor="grid-password">
+                                            Quant.
+                                        </label>
+                                        <input
+                                            formControlName="quantidade"
+                                            type="number"
+                                            pKeyFilter="int"
+                                            min="1"
+                                            pInputText
+                                        />
+                                    </div>
+
+                                    <div class="field col-8 md:col-3">
+                                        <label htmlFor="grid-password">
+                                            Medida (cm)
+                                        </label>
+                                        <input
+                                            formControlName="medida"
+                                            type="text"
+                                            pInputText
+                                        />
+                                    </div>
+
+                                    <div class="field col-12 md:col-2">
+                                        <label htmlFor="grid-password">
+                                            Valor
+                                        </label>
+                                        <p-inputNumber
+                                            formControlName="valor"
+                                            mode="currency"
+                                            inputId="currency-brl"
+                                            currency="BRL"
+                                        >
+                                        </p-inputNumber>
+                                    </div>
+
+                                    <div
+                                        class="w-full flex align-items-center justify-content-end"
+                                    >
+                                        <button
+                                            class="w-9rem m-1 p-button-primary p-button p-component text-center"
+                                            pButton
+                                            (click)="
+                                                duplicarItem(
+                                                    ambienteIndex,
+                                                    itemIndex
+                                                )
+                                            "
+                                        >
+                                            Duplicar Item
+                                        </button>
+                                        <button
+                                            pButton
+                                            class="w-9rem m-1 p-button-danger p-button p-component"
+                                            pButton
+                                            (click)="
+                                                removerItem(
+                                                    ambienteIndex,
+                                                    itemIndex
+                                                )
+                                            "
+                                        >
+                                            Remover Item
+                                        </button>
+                                    </div>
+                                </ng-container>
+                                <div class="col-12">
+                                    <p-divider></p-divider>
+                                </div>
+                            </ng-container>
+                            <div
+                                class="col-12 flex justify-content-between align-items-center"
+                            >
+                                <button
+                                    pButton
+                                    class="w-10rem m-1 p-button-success p-button p-component text-center"
+                                    (click)="adicionarItem(ambienteIndex)"
+                                >
+                                    Adicionar Item
+                                </button>
+                                <button
+                                    pButton
+                                    class="w-12rem m-1 p-button-danger p-button p-component"
+                                    (click)="removerAmbiente(ambienteIndex)"
+                                >
+                                    Remover Ambiente
+                                </button>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <button
+                    style="width: 160px"
+                    pButton
+                    class="p-element p-button-success p-button p-component"
+                    (click)="adicionarAmbiente()"
+                >
+                    Adicionar Ambiente
+                </button>
+                <p-divider></p-divider>
+
+                <h5>Adicionais</h5>
+                <div class="p-fluid p-formgrid grid">
+                    <div class="field col-12 md:col-4">
+                        <label htmlFor="firstname2">Data de envio</label>
+                        <p-calendar
+                            formControlName="dataEnvio"
+                            [showIcon]="true"
+                            [maxDate]="maxDate"
+                            [defaultDate]="maxDate"
+                            dateFormat="dd/mm/yy"
+                        ></p-calendar>
+                    </div>
+                    <div class="field col-12 md:col-8">
+                        <label htmlFor="firstname2">Atendente</label>
+                        <input
+                            pInputText
+                            (input)="toTitleCase($event)"
+                            formControlName="atendente"
+                            type="text"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-12">
+                        <label>Informação Adicional</label>
+                        <textarea
+                            pInputTextarea
+                            formControlName="informacaoAdicional"
+                            type="text"
+                        >
+                        </textarea>
+                    </div>
+                    <div class="field col-12 md:col-12">
+                        <label
+                            >Observação (somente funcionários conseguem
+                            ver)</label
+                        >
+                        <textarea
+                            pInputTextarea
+                            formControlName="observacao"
+                            type="text"
+                        >
+                        </textarea>
+                    </div>
+                </div>
+
+                <p-divider></p-divider>
+
+                <p-button
+                    class="p-button-lg"
+                    label="Salvar"
+                    icon="pi pi-check"
+                    [loading]="loading"
+                    (onClick)="enviar()"
+                    pRipple
+                ></p-button>
+                <p-toast></p-toast>
+                <p-confirmDialog #cd [style]="{ width: '50vw' }">
+                    <ng-template pTemplate="footer">
+                        <button
+                            type="button"
+                            pButton
+                            icon="pi pi-times"
+                            label="Não"
+                            (click)="cd.reject()"
+                        ></button>
+                        <button
+                            type="button"
+                            pButton
+                            icon="pi pi-check"
+                            label="Sim"
+                            (click)="cd.accept()"
+                        ></button>
+                    </ng-template>
+                </p-confirmDialog>
+            </form>
+        </div>
+    </div>
+</div>
