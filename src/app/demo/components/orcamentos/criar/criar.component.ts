@@ -331,12 +331,9 @@ export class CriarOrcamentoComponent {
             if (ctrl) {
                 const ctrl2 = ctrl.controls['itens'].controls;
                 ctrl2.forEach((ctrl3) => {
-                    valorTotal += Number(
-                        ctrl3.controls['valor'].value
-                            .replace('R$', '')
-                            .replace('.', '')
-                            .replace(',', '.')
-                    );
+                    debugger;
+                    let valor = ctrl3.controls['valor'].value;
+                    valorTotal += Number(valor);
                 });
             }
         });
