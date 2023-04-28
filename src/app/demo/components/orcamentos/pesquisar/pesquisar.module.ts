@@ -17,6 +17,7 @@ import { RatingModule } from 'primeng/rating';
 import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
 import { LOCALE_ID } from '@angular/core';
+import { SplitButtonModule } from 'primeng/splitbutton';
 
 registerLocaleData(localePt);
 @NgModule({
@@ -35,6 +36,7 @@ registerLocaleData(localePt);
         DropdownModule,
         ProgressBarModule,
         ToastModule,
+        SplitButtonModule,
     ],
     declarations: [PesquisarOrcamentoComponent],
     providers: [

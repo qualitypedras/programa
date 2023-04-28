@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Validators, FormBuilder, FormArray } from '@angular/forms';
+import { Validators, FormBuilder, FormArray, FormGroup } from '@angular/forms';
 import { AuthService } from 'src/app/shared/service/auth.service';
 import { OrcamentoService } from '../orcamento.service';
 import { HttpClient } from '@angular/common/http';
@@ -24,6 +24,7 @@ export class CriarOrcamentoComponent {
         telCliente: ['', [Validators.required]],
         cepCliente: [''],
         enderecoCliente: [''],
+        bairroCliente: [''],
         numeroEnderecoCliente: [''],
         cidadeCliente: [''],
         estadoCliente: [''],
@@ -71,7 +72,8 @@ export class CriarOrcamentoComponent {
                         if (doc.exists) {
                             const data = doc.data() as any;
                             this.orcamento = data;
-                            this.signaturePad.fromData(data.rascunhoData);
+                            if (data.rascunhoData)
+                                this.signaturePad.fromData(data.rascunhoData);
                             if (this.orcamento.dataEnvio?.seconds)
                                 this.orcamento.dataEnvio = moment(
                                     this.orcamento.dataEnvio.seconds * 1000
@@ -122,8 +124,16 @@ export class CriarOrcamentoComponent {
                                                     item.especificacao,
                                                 ],
                                                 material: [item.material],
-                                                medida: [item.medida],
+                                                comprimento: [item.comprimento],
+                                                largura: [item.largura],
+                                                profundidade: [
+                                                    item.profundidade,
+                                                ],
                                                 valor: [item.valor],
+                                                item: [item.item],
+                                                metroQuadrado: [
+                                                    item.metroQuadrado,
+                                                ],
                                             })
                                         );
                                     }
@@ -146,6 +156,7 @@ export class CriarOrcamentoComponent {
                                 numeroEnderecoCliente: data.numero,
                                 cidadeCliente: data.localidade,
                                 estadoCliente: data.uf,
+                                bairroCliente: data.bairro,
                             });
                         });
                 }
@@ -245,9 +256,13 @@ export class CriarOrcamentoComponent {
         itens.push(
             this.fb.group({
                 quantidade: [item.controls['quantidade'].value],
+                item: [item.controls['item'].value],
                 especificacao: [item.controls['especificacao'].value],
                 material: [item.controls['material'].value],
-                medida: [item.controls['medida'].value],
+                comprimento: [item.controls['comprimento'].value],
+                largura: [item.controls['largura'].value],
+                profundidade: [item.controls['profundidade'].value],
+                metroQuadrado: [item.control['metroQuadrado'].value],
                 valor: [item.controls['valor'].value],
             })
         );
@@ -275,12 +290,44 @@ export class CriarOrcamentoComponent {
         itens.push(
             this.fb.group({
                 quantidade: [1],
+                item: [''],
                 especificacao: [''],
                 material: [''],
-                medida: [''],
+                comprimento: [''],
+                largura: [''],
+                profundidade: [''],
+                metroQuadrado: [''],
                 valor: [''],
             })
         );
+
+        let item = itens.controls[itens.controls.length - 1] as FormGroup;
+        item.controls['comprimento'].valueChanges.subscribe({
+            next: () => {
+                const comprimento = item.controls['comprimento'].value;
+                const largura = item.controls['largura'].value;
+                if (comprimento && largura) {
+                    const valor = comprimento * largura;
+                    item.controls['metroQuadrado'].setValue(valor);
+                }
+            },
+        });
+
+        item.controls['largura'].valueChanges.subscribe({
+            next: () => {
+                if (
+                    item.controls['comprimento'].value &&
+                    item.controls['largura'].value
+                ) {
+                    const comprimento = item.controls['comprimento'].value;
+                    const largura = item.controls['largura'].value;
+                    if (comprimento && largura) {
+                        const valor = comprimento * largura;
+                        item.controls['metroQuadrado'].setValue(valor);
+                    }
+                }
+            },
+        });
     }
 
     async enviar() {
@@ -331,7 +378,6 @@ export class CriarOrcamentoComponent {
             if (ctrl) {
                 const ctrl2 = ctrl.controls['itens'].controls;
                 ctrl2.forEach((ctrl3) => {
-                    debugger;
                     let valor = ctrl3.controls['valor'].value;
                     valorTotal += Number(valor);
                 });
@@ -374,6 +420,7 @@ export class CriarOrcamentoComponent {
             telCliente: ['', [Validators.required]],
             cepCliente: [''],
             enderecoCliente: [''],
+            bairroCliente: [''],
             numeroEnderecoCliente: [''],
             cidadeCliente: [''],
             estadoCliente: [''],

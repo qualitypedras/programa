@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
 import { AuthService } from 'src/app/shared/service/auth.service';
@@ -27,14 +28,16 @@ export class LoginComponent {
 
     constructor(
         public layoutService: LayoutService,
-        public loginService: AuthService
+        public loginService: AuthService,
+        public router: Router
     ) {}
 
-    enviar() {
+    async enviar() {
         if (!this.senha || !this.email) {
             return;
         }
 
-        this.loginService.logar(this.email, this.senha);
+        await this.loginService.logar(this.email, this.senha);
+        this.router.navigate(['/']);
     }
 }

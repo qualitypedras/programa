@@ -77,30 +77,42 @@
                                 Status
                             </div>
                         </th>
+                        <th style="min-width: 10rem">
+                            <div
+                                class="flex justify-content-between align-items-center"
+                            >
+                                Ações
+                            </div>
+                        </th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-orcamento>
-                    <tr
-                        style="cursor: pointer"
-                        (click)="handleSelect(orcamento)"
-                    >
-                        <td>
+                    <tr style="cursor: pointer">
+                        <td (click)="handleSelect(orcamento)">
                             {{ orcamento.uid }}
                         </td>
-                        <td>
+                        <td (click)="handleSelect(orcamento)">
                             {{ orcamento.nomeCliente }}
                         </td>
-                        <td>
+                        <td (click)="handleSelect(orcamento)">
                             {{
                                 orcamento.valorTotal
                                     | currency : "BRL" : "symbol"
                             }}
                         </td>
-                        <td>
+                        <td (click)="handleSelect(orcamento)">
                             {{ orcamento.dataEnvio | date : "dd/MM/yyyy" }}
                         </td>
-                        <td>
+                        <td (click)="handleSelect(orcamento)">
                             {{ orcamento.status }}
+                        </td>
+                        <td>
+                            <p-splitButton
+                                label="Baixar"
+                                icon="pi pi-file-pdf"
+                                (onClick)="downloadPdf(orcamento)"
+                                [model]="items"
+                            ></p-splitButton>
                         </td>
                     </tr>
                 </ng-template>

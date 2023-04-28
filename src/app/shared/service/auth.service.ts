@@ -45,12 +45,12 @@ export class AuthService {
         });
     }
 
-    logar(email: string, password: string) {
-        return this.afAuth
+    async logar(email: string, password: string) {
+        await this.afAuth
             .signInWithEmailAndPassword(email, password)
-            .then((result) => {
-                this.SetUserData(result.user);
-                this.router.navigate(['/']);
+            .then(async (result) => {
+                await this.SetUserData(result.user);
+                await this.router.navigate(['/']);
             })
             .catch((error) => {
                 this.messageService.add({
@@ -67,11 +67,11 @@ export class AuthService {
         return user !== null && user.emailVerified !== false ? true : false;
     }
 
-    SetUserData(user: any) {
+    async SetUserData(user: any) {
         const userRef: AngularFirestoreDocument<any> = this.afs.doc(
             `users/${user.uid}`
         );
-        this.afs
+        await this.afs
             .collection('users')
             .doc(user.uid)
             .ref.get()

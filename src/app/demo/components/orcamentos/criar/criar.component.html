@@ -50,6 +50,14 @@
                         />
                     </div>
                     <div class="field col-12 md:col-3">
+                        <label htmlFor="city">Bairro</label>
+                        <input
+                            pInputText
+                            formControlName="bairroCliente"
+                            type="text"
+                        />
+                    </div>
+                    <div class="field col-12 md:col-3">
                         <label htmlFor="city">Cidade</label>
                         <input
                             pInputText
@@ -67,7 +75,7 @@
                             type="text"
                         />
                     </div>
-                    <div class="field col-12 md:col-6">
+                    <div class="field col-12 md:col-3">
                         <label htmlFor="estado">Número</label>
                         <input
                             pInputText
@@ -117,6 +125,17 @@
                                 <ng-container formGroupName="{{ itemIndex }}">
                                     <div class="field col-12">
                                         <label htmlFor="grid-password">
+                                            Item
+                                        </label>
+                                        <textarea
+                                            pInputTextarea
+                                            formControlName="item"
+                                            type="text"
+                                        >
+                                        </textarea>
+                                    </div>
+                                    <div class="field col-12">
+                                        <label htmlFor="grid-password">
                                             Especificação
                                         </label>
                                         <textarea
@@ -125,16 +144,6 @@
                                             type="text"
                                         >
                                         </textarea>
-                                    </div>
-                                    <div class="field col-12 md:col-6">
-                                        <label htmlFor="grid-password">
-                                            Material
-                                        </label>
-                                        <input
-                                            formControlName="material"
-                                            type="text"
-                                            pInputText
-                                        />
                                     </div>
 
                                     <div class="field col-4 md:col-1">
@@ -150,15 +159,64 @@
                                         />
                                     </div>
 
-                                    <div class="field col-8 md:col-3">
+                                    <div class="field col-8 md:col-6">
                                         <label htmlFor="grid-password">
-                                            Medida (cm)
+                                            Material
                                         </label>
                                         <input
-                                            formControlName="medida"
+                                            formControlName="material"
                                             type="text"
                                             pInputText
                                         />
+                                    </div>
+
+                                    <div class="field col-6 md:col-1">
+                                        <label htmlFor="grid-password">
+                                            Comprimento
+                                        </label>
+                                        <p-inputNumber
+                                            formControlName="comprimento"
+                                            inputId="minmaxfraction"
+                                            mode="decimal"
+                                            [maxFractionDigits]="4"
+                                        >
+                                        </p-inputNumber>
+                                    </div>
+
+                                    <div class="field col-6 md:col-1">
+                                        <label htmlFor="grid-password">
+                                            Largura
+                                        </label>
+                                        <p-inputNumber
+                                            formControlName="largura"
+                                            inputId="minmaxfraction"
+                                            mode="decimal"
+                                            [maxFractionDigits]="4"
+                                        >
+                                        </p-inputNumber>
+                                    </div>
+
+                                    <div class="field col-6 md:col-1">
+                                        <label htmlFor="grid-password">
+                                            Profundidade
+                                        </label>
+                                        <p-inputNumber
+                                            formControlName="profundidade"
+                                            inputId="minmaxfraction"
+                                            mode="decimal"
+                                            [maxFractionDigits]="2"
+                                        >
+                                        </p-inputNumber>
+                                    </div>
+
+                                    <div class="field col-6 md:col-2">
+                                        <label htmlFor="grid-password">
+                                            Metro (m²)
+                                        </label>
+                                        <p-inputNumber
+                                            formControlName="metroQuadrado"
+                                        >
+                                        </p-inputNumber>
                                     </div>
 
                                     <div class="field col-12 md:col-2">
