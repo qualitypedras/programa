@@ -1,5 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-import { Validators, FormBuilder, FormArray, FormGroup } from '@angular/forms';
+import {
+    Validators,
+    FormBuilder,
+    FormArray,
+    FormGroup,
+    Form,
+} from '@angular/forms';
 import { AuthService } from 'src/app/shared/service/auth.service';
 import { OrcamentoService } from '../orcamento.service';
 import { HttpClient } from '@angular/common/http';
@@ -74,13 +80,17 @@ export class CriarOrcamentoComponent {
                             this.orcamento = data;
                             if (data.rascunhoData)
                                 this.signaturePad.fromData(data.rascunhoData);
-                            if (this.orcamento.dataEnvio?.seconds)
+
+                            if (this.orcamento.dataEnvio?.seconds) {
                                 this.orcamento.dataEnvio = moment(
                                     this.orcamento.dataEnvio.seconds * 1000
                                 ).toDate();
+                            }
+
                             this.form.patchValue(this.orcamento, {
                                 emitEvent: false,
                             });
+
                             if (this.orcamento?.ambientes) {
                                 const ambiente = this.form.get(
                                     'ambientes'
@@ -92,6 +102,12 @@ export class CriarOrcamentoComponent {
                                 ) {
                                     ambiente.push(
                                         this.fb.group({
+                                            hideAmbiente: [
+                                                Boolean(
+                                                    this.orcamento?.ambientes[i]
+                                                        .hideAmbiente
+                                                ),
+                                            ],
                                             descricao: [
                                                 this.orcamento?.ambientes[i]
                                                     .descricao,
@@ -228,12 +244,34 @@ export class CriarOrcamentoComponent {
         });
     }
 
-    removerItem(ambienteIndex, index) {
+    removerTopico(ambienteIndex, index) {
         const ambiente = this.form.get('ambientes') as FormArray;
-        const itens = ambiente.at(ambienteIndex).get('itens') as FormArray;
+        const topicos = ambiente.at(ambienteIndex).get('topicos') as FormArray;
         this.confirmationService.confirm({
-            message: `Você tem certeza que deseja excluir o item <strong>${itens
+            message: `Você tem certeza que deseja excluir o tópico <strong>${topicos
                 .at(index)
+                .get('descricao')
+                ?.value.toUpperCase()}</strong>? `,
+            header: 'Confirmação',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                topicos.removeAt(index);
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Sucesso!',
+                    detail: 'Item excluído.',
+                });
+            },
+        });
+    }
+
+    removerItem(ambienteIndex, topicoIndex, index) {
+        const ambiente = this.form.get('ambientes') as FormArray;
+        const topicos = ambiente.at(ambienteIndex).get('topicos') as FormArray;
+        const itens = topicos.at(topicoIndex).get('itens') as FormArray;
+        const item = itens.at(index) as any;
+        this.confirmationService.confirm({
+            message: `Você tem certeza que deseja excluir o item <strong>${item
                 .get('especificacao')
                 ?.value.toUpperCase()}</strong>? `,
             header: 'Confirmação',
@@ -249,50 +287,37 @@ export class CriarOrcamentoComponent {
         });
     }
 
-    duplicarItem(ambienteIndex, index) {
+    removerMaterial(ambienteIndex, topicoIndex, index) {
         const ambiente = this.form.get('ambientes') as FormArray;
-        const itens = ambiente.at(ambienteIndex).get('itens') as FormArray;
-        const item = itens.at(index) as any;
-        itens.push(
-            this.fb.group({
-                quantidade: [item.controls['quantidade'].value],
-                item: [item.controls['item'].value],
-                especificacao: [item.controls['especificacao'].value],
-                material: [item.controls['material'].value],
-                comprimento: [item.controls['comprimento'].value],
-                largura: [item.controls['largura'].value],
-                profundidade: [item.controls['profundidade'].value],
-                metroQuadrado: [item.control['metroQuadrado'].value],
-                valor: [item.controls['valor'].value],
-            })
-        );
+        const topicos = ambiente.at(ambienteIndex).get('topicos') as FormArray;
+        const materiais = topicos.at(topicoIndex).get('materiais') as FormArray;
+        const material = materiais.at(index) as any;
+        this.confirmationService.confirm({
+            message: `Você tem certeza que deseja excluir o material <strong>${material
+                .get('descricao')
+                ?.value.toUpperCase()}</strong>? `,
+            header: 'Confirmação',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                materiais.removeAt(index);
+                this.messageService.add({
+                    severity: 'info',
+                    summary: 'Sucesso!',
+                    detail: 'Item excluído.',
+                });
+            },
+        });
     }
 
-    adicionarAmbiente() {
+    adicionarItem(ambienteIndex, topicoIndex) {
+        debugger;
         const ambiente = this.form.get('ambientes') as FormArray;
-        ambiente.push(
-            this.fb.group({
-                descricao: [''],
-                itens: this.fb.array([]),
-            })
-        );
-    }
-
-    getItensAmbiente(ambienteIndex: number) {
-        const ambiente = this.form.get('ambientes') as FormArray;
-        const item = ambiente.at(ambienteIndex).get('itens') as FormArray;
-        return item.controls;
-    }
-
-    adicionarItem(ambienteIndex: number) {
-        const ambiente = this.form.get('ambientes') as FormArray;
-        const itens = ambiente.at(ambienteIndex).get('itens') as FormArray;
-        itens.push(
+        const topicos = ambiente.at(ambienteIndex).get('topicos') as FormArray;
+        const itensToPush = topicos.at(topicoIndex).get('itens') as FormArray;
+        itensToPush.push(
             this.fb.group({
                 quantidade: [1],
-                item: [''],
                 especificacao: [''],
-                material: [''],
                 comprimento: [''],
                 largura: [''],
                 profundidade: [''],
@@ -301,14 +326,27 @@ export class CriarOrcamentoComponent {
             })
         );
 
-        let item = itens.controls[itens.controls.length - 1] as FormGroup;
+        const topico = topicos.controls[
+            topicos.controls.length - 1
+        ] as FormGroup;
+        const itens = topico.controls['itens'] as FormArray;
+        const item = itens.controls[itens.controls.length - 1] as FormGroup;
+        const materiais = topico.controls['materiais'] as FormArray;
+        const material = materiais.controls[
+            materiais.controls.length - 1
+        ] as FormGroup;
+
         item.controls['comprimento'].valueChanges.subscribe({
             next: () => {
                 const comprimento = item.controls['comprimento'].value;
                 const largura = item.controls['largura'].value;
                 if (comprimento && largura) {
-                    const valor = comprimento * largura;
-                    item.controls['metroQuadrado'].setValue(valor);
+                    const metragem = comprimento * largura;
+                    const quantidade = item.controls['quantidade'].value;
+                    const valorMaterial = material.controls['valorm2'].value;
+                    const valor = metragem * valorMaterial * quantidade;
+                    item.controls['metroQuadrado'].setValue(metragem);
+                    item.controls['valor'].setValue(valor);
                 }
             },
         });
@@ -322,8 +360,190 @@ export class CriarOrcamentoComponent {
                     const comprimento = item.controls['comprimento'].value;
                     const largura = item.controls['largura'].value;
                     if (comprimento && largura) {
-                        const valor = comprimento * largura;
-                        item.controls['metroQuadrado'].setValue(valor);
+                        const metragem = Number(
+                            (comprimento * largura).toFixed(2)
+                        );
+                        const quantidade = item.controls['quantidade'].value;
+                        const valorMaterial =
+                            material.controls['valorm2'].value;
+                        const valor = metragem * valorMaterial * quantidade;
+                        item.controls['metroQuadrado'].setValue(metragem);
+                        item.controls['valor'].setValue(valor);
+                    }
+                }
+            },
+        });
+
+        item.controls['largura'].valueChanges.subscribe({
+            next: () => {
+                if (
+                    item.controls['comprimento'].value &&
+                    item.controls['largura'].value
+                ) {
+                    const comprimento = item.controls['comprimento'].value;
+                    const largura = item.controls['largura'].value;
+                    if (comprimento && largura) {
+                        const metragem = Number(
+                            (comprimento * largura).toFixed(2)
+                        );
+                        const quantidade = item.controls['quantidade'].value;
+                        const valorMaterial =
+                            material.controls['valorm2'].value;
+                        const valor = metragem * valorMaterial * quantidade;
+                        item.controls['metroQuadrado'].setValue(metragem);
+                        item.controls['valor'].setValue(valor);
+                    }
+                }
+            },
+        });
+    }
+
+    adicionarMaterial(ambienteIndex, topicoIndex) {
+        const ambiente = this.form.get('ambientes') as FormArray;
+        const topicos = ambiente.at(ambienteIndex).get('topicos') as FormArray;
+        const materiais = topicos.at(topicoIndex).get('materiais') as FormArray;
+        materiais.push(
+            this.fb.group({
+                descricao: [''],
+                valorm2: [''],
+            })
+        );
+    }
+
+    duplicarItem(ambienteIndex, topicoIndex, index) {
+        const ambiente = this.form.get('ambientes') as FormArray;
+        const topicos = ambiente.at(ambienteIndex).get('topicos') as FormArray;
+        const itens = topicos.at(topicoIndex).get('itens') as FormArray;
+        const item = itens.at(index) as any;
+        itens.push(
+            this.fb.group({
+                quantidade: [item.controls['quantidade'].value],
+                especificacao: [item.controls['especificacao'].value],
+                comprimento: [item.controls['comprimento'].value],
+                largura: [item.controls['largura'].value],
+                profundidade: [item.controls['profundidade'].value],
+                metroQuadrado: [item.controls['metroQuadrado'].value],
+                valor: [item.controls['valor'].value],
+            })
+        );
+    }
+
+    adicionarAmbiente() {
+        const ambiente = this.form.get('ambientes') as FormArray;
+        ambiente.push(
+            this.fb.group({
+                hideAmbiente: [false],
+                descricao: [''],
+                topicos: this.fb.array([]),
+            })
+        );
+    }
+
+    getTopicosAmbientes(ambienteIndex: number) {
+        const ambiente = this.form.get('ambientes') as FormArray;
+        const topicos = ambiente.at(ambienteIndex).get('topicos') as FormArray;
+        return topicos.controls;
+    }
+
+    getItensTopicosAmbientes(ambienteIndex: number, topicoIndex: number) {
+        const ambiente = this.form.get('ambientes') as FormArray;
+        const topicos = ambiente.at(ambienteIndex).get('topicos') as FormArray;
+        const itens = topicos.at(topicoIndex).get('itens') as FormArray;
+        return itens.controls;
+    }
+
+    getMateriaisTopicosAmbientes(ambienteIndex: number, topicoIndex: number) {
+        const ambiente = this.form.get('ambientes') as FormArray;
+        const topicos = ambiente.at(ambienteIndex).get('topicos') as FormArray;
+        const materiais = topicos.at(topicoIndex).get('materiais') as FormArray;
+        return materiais.controls;
+    }
+
+    adicionarTopico(ambienteIndex: number) {
+        debugger;
+        const ambiente = this.form.get('ambientes') as FormArray;
+        const topicos = ambiente.at(ambienteIndex).get('topicos') as FormArray;
+        topicos.push(
+            this.fb.group({
+                descricao: [''],
+                itens: this.fb.array([
+                    this.fb.group({
+                        quantidade: [1],
+                        especificacao: [''],
+                        comprimento: [''],
+                        largura: [''],
+                        profundidade: [''],
+                        metroQuadrado: [''],
+                        valor: [''],
+                    }),
+                ]),
+                materiais: this.fb.array([
+                    this.fb.group({
+                        descricao: [''],
+                        valorm2: [''],
+                    }),
+                ]),
+            })
+        );
+
+        const topico = topicos.controls[
+            topicos.controls.length - 1
+        ] as FormGroup;
+        const itens = topico.controls['itens'] as FormArray;
+        const item = itens.controls[itens.controls.length - 1] as FormGroup;
+        const materiais = topico.controls['materiais'] as FormArray;
+        const material = materiais.controls[
+            materiais.controls.length - 1
+        ] as FormGroup;
+
+        material.controls['valorm2'].valueChanges.subscribe({
+            next: () => {
+                const comprimento = item.controls['comprimento'].value;
+                const largura = item.controls['largura'].value;
+                if (comprimento && largura) {
+                    const metragem = Number((comprimento * largura).toFixed(2));
+                    const quantidade = item.controls['quantidade'].value;
+                    const valorMaterial = material.controls['valorm2'].value;
+                    const valor = metragem * valorMaterial * quantidade;
+                    item.controls['metroQuadrado'].setValue(metragem);
+                    item.controls['valor'].setValue(valor);
+                }
+            },
+        });
+
+        item.controls['comprimento'].valueChanges.subscribe({
+            next: () => {
+                const comprimento = item.controls['comprimento'].value;
+                const largura = item.controls['largura'].value;
+                if (comprimento && largura) {
+                    const metragem = Number((comprimento * largura).toFixed(2));
+                    const quantidade = item.controls['quantidade'].value;
+                    const valorMaterial = material.controls['valorm2'].value;
+                    const valor = metragem * valorMaterial * quantidade;
+                    item.controls['metroQuadrado'].setValue(metragem);
+                    item.controls['valor'].setValue(valor);
+                }
+            },
+        });
+
+        item.controls['largura'].valueChanges.subscribe({
+            next: () => {
+                if (
+                    item.controls['comprimento'].value &&
+                    item.controls['largura'].value
+                ) {
+                    const comprimento = item.controls['comprimento'].value;
+                    const largura = item.controls['largura'].value;
+                    if (comprimento && largura) {
+                        const metragem = Number(
+                            (comprimento * largura).toFixed(2)
+                        );
+                        const quantidade = item.controls['quantidade'].value;
+                        const valorMaterial =
+                            material.controls['valorm2'].value;
+                        const valor = metragem * valorMaterial * quantidade;
+                        item.controls['metroQuadrado'].setValue(metragem);
+                        item.controls['valor'].setValue(valor);
                     }
                 }
             },
@@ -333,7 +553,7 @@ export class CriarOrcamentoComponent {
     async enviar() {
         this.loading = true;
 
-        await this.confirmationService.confirm({
+        this.confirmationService.confirm({
             message: `O atendente salvo será <strong>${
                 this.form.get('atendente')?.value
             }</strong>. Deseja continuar?`,
@@ -433,5 +653,23 @@ export class CriarOrcamentoComponent {
             ambientes: this.fb.array([]),
         });
         this.form.get('atendente')?.setValue(this.auth.user.displayName);
+    }
+
+    hideAmbiente(ambienteIndex) {
+        const ambientes = this.form.get('ambientes') as FormArray;
+        const ambiente = ambientes.at(ambienteIndex) as FormGroup;
+        ambiente.controls['hideAmbiente'].setValue(true);
+    }
+
+    seeAmbiente(ambienteIndex) {
+        const ambientes = this.form.get('ambientes') as FormArray;
+        const ambiente = ambientes.at(ambienteIndex) as FormGroup;
+        ambiente.controls['hideAmbiente'].setValue(false);
+    }
+
+    getAmbienteControls(index) {
+        const ambientes = this.form.get('ambientes') as FormArray;
+        const ambiente = ambientes.at(index) as FormGroup;
+        return ambiente.controls;
     }
 }

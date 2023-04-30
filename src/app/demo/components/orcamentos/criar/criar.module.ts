@@ -19,6 +19,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { PanelModule } from 'primeng/panel';
+import { SpeedDialModule } from 'primeng/speeddial';
 import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
 
 @NgModule({
@@ -45,6 +46,7 @@ import { AngularSignaturePadModule } from '@almothafar/angular-signature-pad';
         ConfirmDialogModule,
         PanelModule,
         AngularSignaturePadModule,
+        SpeedDialModule,
     ],
     declarations: [CriarOrcamentoComponent],
     providers: [ConfirmationService, MessageService],

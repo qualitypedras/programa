@@ -106,162 +106,281 @@
                 >
                     <div class="p-fluid p-formgrid grid col-12">
                         <ng-container formGroupName="{{ ambienteIndex }}">
-                            <div class="field col-12">
-                                <label>Ambiente</label>
-                                <input
-                                    pInputText
-                                    formControlName="descricao"
-                                    type="text"
-                                />
+                            <div
+                                *ngIf="
+                                    !getAmbienteControls(ambienteIndex)[
+                                        'hideAmbiente'
+                                    ].value
+                                "
+                                class="field col-12"
+                            >
+                                <label htmlFor="grid-password">
+                                    Ambiente
+                                </label>
+                                <div class="p-inputgroup">
+                                    <input
+                                        formControlName="descricao"
+                                        type="text"
+                                        pInputText
+                                    />
+                                    <button
+                                        (click)="hideAmbiente(ambienteIndex)"
+                                        type="button"
+                                        pButton
+                                        icon="pi pi-times"
+                                        styleClass="p-button-warn"
+                                    ></button>
+                                </div>
+                            </div>
+                            <div
+                                *ngIf="
+                                    getAmbienteControls(ambienteIndex)[
+                                        'hideAmbiente'
+                                    ].value
+                                "
+                                class="field col-2"
+                            >
+                                <button
+                                    (click)="seeAmbiente(ambienteIndex)"
+                                    type="button"
+                                    pButton
+                                    icon="pi pi-eye"
+                                    styleClass="p-button-warn"
+                                    style="width: fit-content"
+                                >
+                                    Ver ambiente
+                                </button>
                             </div>
 
                             <ng-container
-                                formArrayName="itens"
+                                formArrayName="topicos"
                                 *ngFor="
-                                    let item of getItensAmbiente(ambienteIndex);
+                                    let item of getTopicosAmbientes(
+                                        ambienteIndex
+                                    );
                                     index as itemIndex
                                 "
                             >
                                 <ng-container formGroupName="{{ itemIndex }}">
                                     <div class="field col-12">
                                         <label htmlFor="grid-password">
-                                            Item
+                                            Tópico
                                         </label>
                                         <textarea
                                             pInputTextarea
-                                            formControlName="item"
+                                            formControlName="descricao"
                                             type="text"
                                         >
                                         </textarea>
                                     </div>
                                     <div class="field col-12">
-                                        <label htmlFor="grid-password">
-                                            Especificação
-                                        </label>
-                                        <textarea
-                                            pInputTextarea
-                                            formControlName="especificacao"
-                                            type="text"
+                                        <button
+                                            class="w-11rem m-1 p-button-success p-button p-component text-center"
+                                            pButton
+                                            (click)="
+                                                adicionarMaterial(
+                                                    ambienteIndex,
+                                                    itemIndex
+                                                )
+                                            "
                                         >
-                                        </textarea>
+                                            Adicionar material
+                                        </button>
                                     </div>
-
-                                    <div class="field col-4 md:col-1">
-                                        <label htmlFor="grid-password">
-                                            Quant.
-                                        </label>
-                                        <input
-                                            formControlName="quantidade"
-                                            type="number"
-                                            pKeyFilter="int"
-                                            min="1"
-                                            pInputText
-                                        />
-                                    </div>
-
-                                    <div class="field col-8 md:col-6">
-                                        <label htmlFor="grid-password">
-                                            Material
-                                        </label>
-                                        <input
-                                            formControlName="material"
-                                            type="text"
-                                            pInputText
-                                        />
-                                    </div>
-
-                                    <div class="field col-6 md:col-1">
-                                        <label htmlFor="grid-password">
-                                            Comprimento
-                                        </label>
-                                        <p-inputNumber
-                                            formControlName="comprimento"
-                                            inputId="minmaxfraction"
-                                            mode="decimal"
-                                            [maxFractionDigits]="4"
-                                        >
-                                        </p-inputNumber>
-                                    </div>
-
-                                    <div class="field col-6 md:col-1">
-                                        <label htmlFor="grid-password">
-                                            Largura
-                                        </label>
-                                        <p-inputNumber
-                                            formControlName="largura"
-                                            inputId="minmaxfraction"
-                                            mode="decimal"
-                                            [maxFractionDigits]="4"
-                                        >
-                                        </p-inputNumber>
-                                    </div>
-
-                                    <div class="field col-6 md:col-1">
-                                        <label htmlFor="grid-password">
-                                            Profundidade
-                                        </label>
-                                        <p-inputNumber
-                                            formControlName="profundidade"
-                                            inputId="minmaxfraction"
-                                            mode="decimal"
-                                            [maxFractionDigits]="2"
-                                        >
-                                        </p-inputNumber>
-                                    </div>
-
-                                    <div class="field col-6 md:col-2">
-                                        <label htmlFor="grid-password">
-                                            Metro (m²)
-                                        </label>
-                                        <p-inputNumber
-                                            formControlName="metroQuadrado"
-                                        >
-                                        </p-inputNumber>
-                                    </div>
-
-                                    <div class="field col-12 md:col-2">
-                                        <label htmlFor="grid-password">
-                                            Valor
-                                        </label>
-                                        <p-inputNumber
-                                            formControlName="valor"
-                                            mode="currency"
-                                            inputId="currency-brl"
-                                            currency="BRL"
-                                        >
-                                        </p-inputNumber>
-                                    </div>
-
-                                    <div
-                                        class="w-full flex align-items-center justify-content-end"
+                                    <ng-container
+                                        formArrayName="materiais"
+                                        *ngFor="
+                                            let topicoMaterial of getMateriaisTopicosAmbientes(
+                                                ambienteIndex,
+                                                itemIndex
+                                            );
+                                            index as materialTopicoIndex
+                                        "
                                     >
-                                        <button
-                                            class="w-9rem m-1 p-button-primary p-button p-component text-center"
-                                            pButton
-                                            (click)="
-                                                duplicarItem(
-                                                    ambienteIndex,
-                                                    itemIndex
-                                                )
-                                            "
+                                        <ng-container
+                                            formGroupName="{{
+                                                materialTopicoIndex
+                                            }}"
                                         >
-                                            Duplicar Item
-                                        </button>
-                                        <button
-                                            pButton
-                                            class="w-9rem m-1 p-button-danger p-button p-component"
-                                            pButton
-                                            (click)="
-                                                removerItem(
-                                                    ambienteIndex,
-                                                    itemIndex
-                                                )
-                                            "
+                                            <div class="field col-7 md:col-10">
+                                                <label htmlFor="grid-password">
+                                                    Material
+                                                </label>
+                                                <div class="p-inputgroup">
+                                                    <button
+                                                        type="button"
+                                                        pButton
+                                                        icon="pi pi-times"
+                                                        styleClass="p-button-success"
+                                                        (click)="
+                                                            removerMaterial(
+                                                                ambienteIndex,
+                                                                itemIndex,
+                                                                materialTopicoIndex
+                                                            )
+                                                        "
+                                                    ></button>
+                                                    <input
+                                                        pInputTextarea
+                                                        formControlName="descricao"
+                                                        type="text"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div class="field col-5 md:col-2">
+                                                <label htmlFor="grid-password">
+                                                    Valor m²
+                                                </label>
+                                                <p-inputNumber
+                                                    formControlName="valorm2"
+                                                    mode="currency"
+                                                    inputId="currency-brl"
+                                                    currency="BRL"
+                                                >
+                                                </p-inputNumber>
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container
+                                        formArrayName="itens"
+                                        *ngFor="
+                                            let topicoItem of getItensTopicosAmbientes(
+                                                ambienteIndex,
+                                                itemIndex
+                                            );
+                                            index as itemTopicoIndex
+                                        "
+                                    >
+                                        <ng-container
+                                            formGroupName="{{
+                                                itemTopicoIndex
+                                            }}"
                                         >
-                                            Remover Item
-                                        </button>
-                                    </div>
+                                            <div class="field col-4 md:col-1">
+                                                <label htmlFor="grid-password">
+                                                    Quant.
+                                                </label>
+                                                <input
+                                                    formControlName="quantidade"
+                                                    type="number"
+                                                    pKeyFilter="int"
+                                                    min="1"
+                                                    pInputText
+                                                />
+                                            </div>
+
+                                            <div class="field col-8 md:col-6">
+                                                <label htmlFor="grid-password">
+                                                    Especificação
+                                                </label>
+                                                <input
+                                                    pInputTextarea
+                                                    formControlName="especificacao"
+                                                    type="text"
+                                                />
+                                            </div>
+
+                                            <div class="field col-6 md:col-1">
+                                                <label htmlFor="grid-password">
+                                                    Comprimento
+                                                </label>
+                                                <p-inputNumber
+                                                    formControlName="comprimento"
+                                                    inputId="minmaxfraction"
+                                                    mode="decimal"
+                                                    [maxFractionDigits]="4"
+                                                >
+                                                </p-inputNumber>
+                                            </div>
+
+                                            <div class="field col-6 md:col-1">
+                                                <label htmlFor="grid-password">
+                                                    Largura
+                                                </label>
+                                                <p-inputNumber
+                                                    formControlName="largura"
+                                                    inputId="minmaxfraction"
+                                                    mode="decimal"
+                                                    [maxFractionDigits]="4"
+                                                >
+                                                </p-inputNumber>
+                                            </div>
+
+                                            <div class="field col-6 md:col-1">
+                                                <label htmlFor="grid-password">
+                                                    Metro (m²)
+                                                </label>
+                                                <p-inputNumber
+                                                    formControlName="metroQuadrado"
+                                                >
+                                                </p-inputNumber>
+                                            </div>
+
+                                            <div class="field col-6 md:col-2">
+                                                <label htmlFor="grid-password">
+                                                    Valor
+                                                </label>
+                                                <p-inputNumber
+                                                    formControlName="valor"
+                                                    mode="currency"
+                                                    inputId="currency-brl"
+                                                    currency="BRL"
+                                                >
+                                                </p-inputNumber>
+                                            </div>
+                                        </ng-container>
+                                        <div
+                                            class="w-full flex align-items-center justify-content-end"
+                                        >
+                                            <button
+                                                class="w-9rem m-1 p-button-primary p-button p-component text-center"
+                                                pButton
+                                                (click)="
+                                                    duplicarItem(
+                                                        ambienteIndex,
+                                                        itemIndex,
+                                                        itemTopicoIndex
+                                                    )
+                                                "
+                                            >
+                                                Duplicar Item
+                                            </button>
+                                            <button
+                                                pButton
+                                                class="w-9rem m-1 p-button-danger p-button p-component"
+                                                pButton
+                                                (click)="
+                                                    removerItem(
+                                                        ambienteIndex,
+                                                        itemIndex,
+                                                        itemTopicoIndex
+                                                    )
+                                                "
+                                            >
+                                                Remover Item
+                                            </button>
+                                        </div>
+                                    </ng-container>
                                 </ng-container>
+                                <button
+                                    class="w-10rem m-1 p-button-success p-button p-component text-center"
+                                    pButton
+                                    (click)="
+                                        adicionarItem(ambienteIndex, itemIndex)
+                                    "
+                                >
+                                    Adicionar item
+                                </button>
+                                <button
+                                    pButton
+                                    class="w-10rem m-1 p-button-danger p-button p-component"
+                                    (click)="
+                                        removerTopico(ambienteIndex, itemIndex)
+                                    "
+                                >
+                                    Remover Tópico
+                                </button>
                                 <div class="col-12">
                                     <p-divider></p-divider>
                                 </div>
@@ -272,9 +391,9 @@
                                 <button
                                     pButton
                                     class="w-10rem m-1 p-button-success p-button p-component text-center"
-                                    (click)="adicionarItem(ambienteIndex)"
+                                    (click)="adicionarTopico(ambienteIndex)"
                                 >
-                                    Adicionar Item
+                                    Adicionar Tópico
                                 </button>
                                 <button
                                     pButton
@@ -287,6 +406,7 @@
                         </ng-container>
                     </div>
                 </div>
+
                 <button
                     style="width: 160px"
                     pButton

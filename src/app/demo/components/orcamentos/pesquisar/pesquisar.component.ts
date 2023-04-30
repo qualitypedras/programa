@@ -102,7 +102,6 @@ export class PesquisarOrcamentoComponent implements OnInit {
 
     downloadPdf(row) {
         console.log(row);
-        // Default export is a4 paper, portrait, using millimeters for units
         const doc = new jsPDF();
 
         var img = new Image();
@@ -127,6 +126,37 @@ export class PesquisarOrcamentoComponent implements OnInit {
             38,
             45
         );
+
+        // nome cliente
+        doc.setFont(`Helvetica`, 'bold');
+        doc.text('Telefone: ', 18, 50);
+        doc.setFont(`Helvetica`, 'normal');
+        doc.text(`${row.telCliente}`, 37, 50);
+
+        doc.setFont(`Helvetica`, 'bold');
+        doc.text('PROPOSTA', 100, 60, { align: 'center' });
+
+        let x, y;
+        x = 18;
+        y = 70;
+        for (let i = 0; i < row.ambientes.length; i++) {
+            doc.setFont(`Helvetica`, 'bold');
+            if (row.ambientes[i].descricao) {
+                doc.text(row.ambientes[i].descricao, x, y);
+                y = y + 5;
+            } else {
+                doc.text(row.ambientes[i].itens[0].especificacao, x, y);
+                y = y + 5;
+                for (let j = 1; j < row.ambientes[i].itens.length; j++) {
+                    doc.setFont(`Helvetica`, 'normal');
+                    doc.text(row.ambientes[i].itens[j].especificacao, x, y);
+                    y = y + 5;
+                    doc.text(row.ambientes[i].itens[j].especificacao, x, y);
+                }
+            }
+        }
+        console.log(row.ambientes[0]);
+        console.log(row.ambientes[1]);
 
         doc.save(`${row.nomeCliente}.pdf`);
         return false;
